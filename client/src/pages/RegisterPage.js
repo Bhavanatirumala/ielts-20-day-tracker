@@ -38,18 +38,6 @@ const RegisterPage = () => {
     }
   };
 
-  const handleResendOtp = async () => {
-    setError('');
-    setSuccess('');
-    try {
-      await axios.post('/api/resend-otp', { email: email });
-      setSuccess('OTP resent to your email.');
-    } catch (err) {
-      setError(err.response?.data?.msg || 'Failed to resend OTP.');
-      setTimeout(() => setError(''), 3000);
-    }
-  };
-
   return (
     <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #fffde7 0%, #fff 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Container maxWidth="xs">
