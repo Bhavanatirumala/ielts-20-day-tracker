@@ -19,9 +19,6 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [step, setStep] = useState(1); // 1: register, 2: otp
-  const [otp, setOtp] = useState('');
-  const [pendingEmail, setPendingEmail] = useState('');
   const [success, setSuccess] = useState('');
 
   const { email, password } = formData;
@@ -45,7 +42,7 @@ const RegisterPage = () => {
     setError('');
     setSuccess('');
     try {
-      await axios.post('/api/resend-otp', { email: pendingEmail });
+      await axios.post('/api/resend-otp', { email: email });
       setSuccess('OTP resent to your email.');
     } catch (err) {
       setError(err.response?.data?.msg || 'Failed to resend OTP.');
@@ -63,53 +60,33 @@ const RegisterPage = () => {
           </Box>
           {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
           {success && <Typography color="success.main" sx={{ mb: 2 }}>{success}</Typography>}
-          {step === 1 ? (
-            <form onSubmit={onSubmit}>
-              <TextField
-                type="email"
-                label="Email Address"
-                name="email"
-                value={email}
-                onChange={onChange}
-                required
-                fullWidth
-                margin="normal"
-                autoFocus
-              />
-              <TextField
-                type="password"
-                label="Password"
-                name="password"
-                value={password}
-                onChange={onChange}
-                required
-                fullWidth
-                margin="normal"
-                minLength={6}
-              />
-              <Button type="submit" variant="contained" color="secondary" fullWidth size="large" sx={{ mt: 2 }}>
-                Register
-              </Button>
-            </form>
-          ) : (
-            <form onSubmit={onSubmit}>
-              <TextField
-                label="Enter OTP"
-                value={otp}
-                onChange={e => setOtp(e.target.value)}
-                required
-                fullWidth
-                margin="normal"
-                autoFocus
-              />
-              <Button type="submit" variant="contained" color="secondary" fullWidth size="large" sx={{ mt: 2 }}>
-                Verify OTP
-              </Button>
-              <Button onClick={handleResendOtp} color="primary" fullWidth sx={{ mt: 1 }}>
-                Resend OTP
-              </Button>
-            </form>
-          )}
+          <form onSubmit={onSubmit}>
+            <TextField
+              type="email"
+              label="Email Address"
+              name="email"
+              value={email}
+              onChange={onChange}
+              required
+              fullWidth
+              margin="normal"
+              autoFocus
+            />
+            <TextField
+              type="password"
+              label="Password"
+              name="password"
+              value={password}
+              onChange={onChange}
+              required
+              fullWidth
+              margin="normal"
+              minLength={6}
+            />
+            <Button type="submit" variant="contained" color="secondary" fullWidth size="large" sx={{ mt: 2 }}>
+              Register
+            </Button>
+          </form>
           <Typography sx={{ mt: 2, textAlign: 'center' }}>
             Already have an account?{' '}
             <Button component={Link} to="/login" color="primary" size="small">Login</Button>

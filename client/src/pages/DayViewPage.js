@@ -15,8 +15,7 @@ import {
   Paper,
   TextField,
   Container,
-  Tooltip,
-  Icon
+  Tooltip
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';

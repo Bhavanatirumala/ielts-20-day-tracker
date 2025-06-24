@@ -10,7 +10,6 @@ import {
   CardContent,
   Grid,
   Container,
-  Icon
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';

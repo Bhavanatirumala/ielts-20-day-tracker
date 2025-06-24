@@ -26,11 +26,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Autocomplete from '@mui/material/Autocomplete';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -52,16 +48,6 @@ const DiscussionBoardPage = () => {
   const [newTitle, setNewTitle] = useState('');
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
-  const [search, setSearch] = useState('');
-  const [tagFilter, setTagFilter] = useState('');
-  const [allTags, setAllTags] = useState([]);
-  const [newTags, setNewTags] = useState([]);
-  const [editPost, setEditPost] = useState(null); // post object
-  const [editContent, setEditContent] = useState('');
-  const [editTitle, setEditTitle] = useState('');
-  const [editTags, setEditTags] = useState([]);
-  const [editComment, setEditComment] = useState(null); // comment object
-  const [editCommentText, setEditCommentText] = useState('');
   const [userId, setUserId] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuPostId, setMenuPostId] = useState(null);
@@ -70,7 +56,7 @@ const DiscussionBoardPage = () => {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/api/discussion/posts', { params: { search, tag: tagFilter } });
+      const res = await axios.get('/api/discussion/posts');
       setPosts(res.data);
     } catch (err) {
       setPosts([]);
@@ -80,8 +66,6 @@ const DiscussionBoardPage = () => {
 
   useEffect(() => {
     fetchPosts();
-    // Get all tags
-    axios.get('/api/discussion/tags').then(res => setAllTags(res.data)).catch(() => setAllTags([]));
     // Get user id
     const token = localStorage.getItem('token');
     if (token) {
@@ -135,15 +119,6 @@ const DiscussionBoardPage = () => {
     } catch {}
   };
 
-  const handleLikeComment = async (commentId) => {
-    const token = localStorage.getItem('token');
-    const config = { headers: { 'x-auth-token': token } };
-    try {
-      const res = await axios.post(`/api/discussion/comments/${commentId}/like`, {}, config);
-      if (openPost) setOpenPost({ ...openPost, comments: openPost.comments.map(c => c._id === commentId ? { ...c, likes: res.data.likes, likedBy: res.data.liked ? [...(c.likedBy || []), userId] : (c.likedBy || []).filter(id => id !== userId) } : c) });
-    } catch {}
-  };
-
   const handleDeletePost = async (postId) => {
     if (!window.confirm('Delete this post?')) return;
     const token = localStorage.getItem('token');
@@ -163,25 +138,6 @@ const DiscussionBoardPage = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     setMenuPostId(null);
-  };
-
-  const handleEditPost = (post) => {
-    setEditPost(post);
-    setEditTitle(post.title || '');
-    setEditContent(post.content || '');
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editContent.trim()) return;
-    const token = localStorage.getItem('token');
-    const config = { headers: { 'x-auth-token': token } };
-    try {
-      await axios.patch(`/api/discussion/posts/${editPost._id}`, { title: editTitle, content: editContent }, config);
-      setEditPost(null);
-      setEditTitle('');
-      setEditContent('');
-      fetchPosts();
-    } catch (err) {}
   };
 
   return (
@@ -248,7 +204,6 @@ const DiscussionBoardPage = () => {
                             <MoreVertIcon />
                           </IconButton>
                           <Menu anchorEl={anchorEl} open={menuPostId === post._id} onClose={handleMenuClose}>
-                            <MenuItem onClick={() => { handleMenuClose(); handleEditPost(post); }}>Edit</MenuItem>
                             <MenuItem onClick={() => { handleMenuClose(); handleDeletePost(post._id); }}>Delete</MenuItem>
                           </Menu>
                         </>
@@ -312,17 +267,6 @@ const DiscussionBoardPage = () => {
               </Button>
             </>
           )}
-        </Box>
-      </Modal>
-      {/* Edit Post Modal */}
-      <Modal open={!!editPost} onClose={() => setEditPost(null)}>
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: theme.palette.background.paper, boxShadow: 24, p: 4, borderRadius: 3 }}>
-          <Typography variant="h6" color="primary" gutterBottom>Edit Post</Typography>
-          <TextField label="Title (optional)" value={editTitle} onChange={e => setEditTitle(e.target.value)} fullWidth sx={{ mb: 2 }} />
-          <TextField label="Content" value={editContent} onChange={e => setEditContent(e.target.value)} fullWidth multiline minRows={4} sx={{ mb: 2 }} />
-          <Button variant="contained" color="primary" onClick={handleSaveEdit} fullWidth disabled={!editContent.trim()}>
-            Save Changes
-          </Button>
         </Box>
       </Modal>
     </Box>

@@ -10,7 +10,6 @@ import {
   Avatar,
   LinearProgress,
   Container,
-  Stack,
   Grid,
   Tooltip as MuiTooltip
 } from '@mui/material';

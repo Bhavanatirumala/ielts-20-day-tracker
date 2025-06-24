@@ -35,14 +35,6 @@ const SECTION_COLORS = {
   Vocabulary: '#2196f3',
 };
 
-const SECTION_LABELS = {
-  Listening: 'Listening',
-  Reading: 'Reading',
-  Writing: 'Writing',
-  Speaking: 'Speaking',
-  Vocabulary: 'Vocab',
-};
-
 const getSection = (task) => {
   const t = task.toLowerCase();
   if (t.includes('listen')) return 'Listening';
