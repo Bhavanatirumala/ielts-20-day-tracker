@@ -19,7 +19,6 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [success, setSuccess] = useState('');
 
   const { email, password } = formData;
 
@@ -47,7 +46,6 @@ const RegisterPage = () => {
             <Typography variant="h4" color="secondary" fontWeight={700} gutterBottom>Register</Typography>
           </Box>
           {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
-          {success && <Typography color="success.main" sx={{ mb: 2 }}>{success}</Typography>}
           <form onSubmit={onSubmit}>
             <TextField
               type="email"
